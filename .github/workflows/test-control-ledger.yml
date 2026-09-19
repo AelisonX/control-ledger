@@ -40,3 +40,11 @@ jobs:
           else
             echo "Invalid source correctly rejected."
           fi
+      - name: Reject invalid time order
+        run: |
+          if python control_ledger.py validate examples/invalid-time-order.json; then
+            echo "Expected invalid time order validation to fail, but it passed."
+            exit 1
+          else
+            echo "Invalid time order correctly rejected."
+          fi
