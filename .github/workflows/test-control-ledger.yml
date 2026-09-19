@@ -48,3 +48,11 @@ jobs:
           else
             echo "Invalid time order correctly rejected."
           fi
+      - name: Reject missing segments
+        run: |
+          if python control_ledger.py validate examples/missing-segments.json; then
+            echo "Expected missing segments validation to fail, but it passed."
+            exit 1
+          else
+            echo "Missing segments correctly rejected."
+          fi
