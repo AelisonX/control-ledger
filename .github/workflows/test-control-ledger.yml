@@ -17,8 +17,17 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Validate example
+      - name: Validate valid example
         run: python control_ledger.py validate examples/ep-017.json
 
-      - name: Analyse example
+      - name: Analyse valid example
         run: python control_ledger.py analyse examples/ep-017.json
+
+      - name: Reject overlapping segments
+        run: |
+          if python control_ledger.py validate examples/invalid-overlap.json; then
+            echo "Expected overlap validation to fail, but it passed."
+            exit 1
+          else
+            echo "Overlap correctly rejected."
+          fi
