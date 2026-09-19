@@ -56,3 +56,11 @@ jobs:
           else
             echo "Missing segments correctly rejected."
           fi
+      - name: Report gap as UNKNOWN
+        run: |
+          output=$(python control_ledger.py analyse examples/gap-becomes-unknown.json)
+
+          echo "$output"
+
+          echo "$output" | grep "UNKNOWN"
+          echo "$output" | grep "2.0 s"
