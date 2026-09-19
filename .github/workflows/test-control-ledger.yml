@@ -64,3 +64,5 @@ jobs:
 
           echo "$output" | grep "UNKNOWN"
           echo "$output" | grep "2.0 s"
+      - name: Run unit tests
+        run: python -m unittest discover -s tests
