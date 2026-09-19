@@ -1,0 +1,17 @@
+{
+  "episode_id": "invalid-overlap",
+  "success": false,
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 10.0,
+      "source": "POLICY"
+    },
+    {
+      "start": 8.0,
+      "end": 15.0,
+      "source": "HUMAN"
+    }
+  ],
+  "support_events": []
+}
