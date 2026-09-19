@@ -69,7 +69,11 @@ Input:
     }
   ]
 }
-example output:
+```
+
+Example output:
+
+```text
 Episode: ep-017
 
 Recorded control time: 20.0 s
@@ -84,3 +88,4 @@ Success:
 YES
 
 Shares describe control authority, not causal contribution.
+```
