@@ -1,0 +1,17 @@
+{
+  "episode_id": "gap-becomes-unknown",
+  "success": true,
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 5.0,
+      "source": "POLICY"
+    },
+    {
+      "start": 7.0,
+      "end": 10.0,
+      "source": "HUMAN"
+    }
+  ],
+  "support_events": []
+}
