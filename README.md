@@ -69,3 +69,18 @@ Input:
     }
   ]
 }
+example output:
+Episode: ep-017
+
+Recorded control time: 20.0 s
+
+POLICY   15.0 s   75.0%
+HUMAN     5.0 s   25.0%
+
+Support events:
+RESET     1
+
+Success:
+YES
+
+Shares describe control authority, not causal contribution.
