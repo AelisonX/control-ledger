@@ -31,3 +31,12 @@ jobs:
           else
             echo "Overlap correctly rejected."
           fi
+
+      - name: Reject invalid source
+        run: |
+          if python control_ledger.py validate examples/invalid-source.json; then
+            echo "Expected invalid source validation to fail, but it passed."
+            exit 1
+          else
+            echo "Invalid source correctly rejected."
+          fi
