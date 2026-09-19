@@ -1,0 +1,24 @@
+name: Test control-ledger
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate example
+        run: python control_ledger.py validate examples/ep-017.json
+
+      - name: Analyse example
+        run: python control_ledger.py analyse examples/ep-017.json
