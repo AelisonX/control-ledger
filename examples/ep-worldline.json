@@ -1,0 +1,29 @@
+{
+  "episode_id": "ep-worldline",
+  "duration": 20.0,
+  "success": true,
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 10.0,
+      "source": "POLICY",
+      "xyz": [0.2, 0.0, 0.8]
+    },
+    {
+      "start": 10.0,
+      "end": 15.0,
+      "source": "HUMAN",
+      "xyz": [0.4, 0.1, 0.7]
+    },
+    {
+      "start": 15.0,
+      "end": 20.0,
+      "source": "POLICY"
+    }
+  ],
+  "support_events": [
+    {
+      "type": "RESET"
+    }
+  ]
+}
