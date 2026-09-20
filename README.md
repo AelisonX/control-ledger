@@ -2,7 +2,7 @@
 
 A small reporting tool for recording control authority and support events in robot rollouts.
 
-`control-ledger` reads simple episode logs and reports who or what had control during a robot rollout, alongside external support events such as resets and setup.
+`control-ledger` reads simple episode logs and reports who or what was recorded as holding control during a robot rollout, alongside external support events such as resets and setup.
 
 It does not calculate an autonomy score.
 
@@ -25,7 +25,7 @@ It may also depend on support outside the control timeline, such as resets, setu
 
 ## Control sources
 
-V0.1 supports:
+The current format supports:
 
 - `POLICY`
 - `HUMAN`
@@ -38,57 +38,62 @@ Unknown time is reported as `UNKNOWN`.
 
 It is never silently counted as `POLICY`.
 
-## Example
+## Control authority
 
-Input:
+In this project, control authority means:
+
+> the source recorded as selecting the command sent to the actuators during that interval.
+
+This is narrower than autonomy, capability, responsibility, or causal contribution.
+
+For example, `75% POLICY` means that the policy was recorded as holding command authority for 75% of the analysed timeline.
+
+It does not mean that the policy caused 75% of the task success.
+
+## Episode duration
+
+An episode may optionally include a total `duration`.
+
+Example:
 
 ```json
 {
   "episode_id": "ep-017",
+  "duration": 60.0,
   "success": true,
   "segments": [
     {
       "start": 0.0,
-      "end": 10.0,
-      "source": "POLICY"
-    },
-    {
-      "start": 10.0,
-      "end": 15.0,
-      "source": "HUMAN"
-    },
-    {
-      "start": 15.0,
       "end": 20.0,
       "source": "POLICY"
     }
   ],
-  "support_events": [
-    {
-      "type": "RESET"
-    }
-  ]
+  "support_events": []
 }
 ```
+
+Because the episode lasts 60 seconds but only the first 20 seconds are labelled, the remaining 40 seconds are reported as `UNKNOWN`.
 
 Example output:
 
 ```text
 Episode: ep-017
 
-Recorded control time: 20.0 s
+Recorded control time: 60.0 s
 
-POLICY      15.0 s   75.0%
-HUMAN        5.0 s   25.0%
+POLICY       20.0 s   33.3%
+UNKNOWN      40.0 s   66.7%
 
 Support events:
-RESET      1
+None
 
 Success:
 YES
 
 Shares describe control authority, not causal contribution.
 ```
+
+If `duration` is omitted, the tool can only analyse the time covered by the supplied timeline.
 
 ## Usage
 
@@ -111,24 +116,42 @@ The tool rejects:
 - overlapping control segments
 - invalid control sources
 - end times that are not greater than start times
-- missing segment lists
+- negative start times
+- invalid numeric values such as `NaN`
+- boolean values used as timestamps
+- non-object segment entries
+- empty segment lists
+- segments that extend beyond the declared episode duration
+
+Small floating-point differences are tolerated so that harmless numerical noise does not create fake gaps or overlaps.
+
+## Unknown stays unknown
 
 Gaps between recorded segments are reported as `UNKNOWN`.
 
-They are not silently assigned to `POLICY`.
+If an episode duration is provided, unrecorded time after the final segment is also reported as `UNKNOWN`.
+
+The tool does not infer model control from missing data.
+
+`UNKNOWN` should not be treated as a failure state or as a measure of robot quality.
+
+A complete log and a capable robot are different things.
+
+Coverage is not quality.
 
 ## Design principles
 
 ### Report, don't score
 
-V0.1 does not produce:
+The tool does not produce:
 
 - an autonomy score
 - a capability score
+- a responsibility score
 - a residual-debt score
 - labels such as "highly autonomous"
 
-The tool reports recorded facts.
+It reports recorded facts.
 
 ### Control and support are separate
 
@@ -136,15 +159,21 @@ Time inside the rollout describes control authority.
 
 External events such as resets and setup are reported separately and are not forced into the control-time denominator.
 
-### Unknown stays unknown
+### Unknown is not evidence
 
-Missing or ambiguous control authority is reported as `UNKNOWN`.
+Missing control attribution is not silently reassigned to another source.
 
-The tool does not infer model control from missing data.
+Unknown coverage should remain visible until better evidence is available.
+
+### Shares are not causation
+
+Control shares describe recorded command authority.
+
+They do not describe causal contribution, capability, responsibility, or the support around the run.
 
 ## Scope
 
-V0.1 is intentionally small.
+This project is intentionally small.
 
 It can:
 
@@ -152,11 +181,18 @@ It can:
 - analyse control segments
 - calculate recorded control-time shares
 - report support events
-- report unknown gaps
-- reject invalid control data
+- report leading, internal, and trailing unknown gaps
+- reject malformed or inconsistent control data
 - output a human-readable report
 
-It does not attempt to determine consciousness, agency, responsibility, autonomy, or causal contribution.
+It does not attempt to determine:
+
+- consciousness
+- agency
+- personhood
+- responsibility
+- autonomy
+- causal contribution
 
 ## Status
 
