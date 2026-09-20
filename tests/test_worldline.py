@@ -1,3 +1,4 @@
+import math
 import unittest
 
 from worldline import spatial_coverage
@@ -33,3 +34,19 @@ class WorldlineTests(unittest.TestCase):
         self.assertEqual(total, 1)
         self.assertEqual(labelled, 0)
         self.assertEqual(missing, 1)
+
+    def test_fake_xyz_counts_as_missing(self):
+        episode = {
+            "episode_id": "fake-space",
+            "segments": [
+                {"start": 0.0, "end": 5.0, "source": "POLICY", "xyz": "kitchen"},
+                {"start": 5.0, "end": 8.0, "source": "HUMAN", "xyz": [0.1, 0.2]},
+                {"start": 8.0, "end": 10.0, "source": "POLICY", "xyz": [0.0, math.nan, 1.0]},
+            ],
+        }
+
+        labelled, missing, total = spatial_coverage(episode)
+
+        self.assertEqual(total, 3)
+        self.assertEqual(labelled, 0)
+        self.assertEqual(missing, 3)
