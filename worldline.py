@@ -1,5 +1,17 @@
 import json
+import math
 import sys
+
+
+def is_xyz(value):
+    if not isinstance(value, list) or len(value) != 3:
+        return False
+    for item in value:
+        if isinstance(item, bool) or not isinstance(item, (int, float)):
+            return False
+        if not math.isfinite(item):
+            return False
+    return True
 
 
 def spatial_coverage(episode):
@@ -8,7 +20,7 @@ def spatial_coverage(episode):
     missing = 0
 
     for segment in segments:
-        if "xyz" in segment:
+        if is_xyz(segment.get("xyz")):
             labelled += 1
         else:
             missing += 1
